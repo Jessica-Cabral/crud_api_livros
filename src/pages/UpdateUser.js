@@ -11,8 +11,33 @@ import {
 import Mytext from "./components/Mytext";
 import Mytextinput from "./components/Mytextinput";
 import Mybutton from "./components/Mybutton";
+import { useRoute } from "@react-navigation/native";
+import axios from 'axios';
 
 const UpdateUser = ({ navigation }) => {
+  const route =useRoute();
+  const {id_autor, nome} = route.params;
+  const [id, setId] = useState(id_autor);
+  const [autor, setAutor] = useState(nome);
+
+  //atualizar autor
+  async function atualizarAutor () {
+    try {
+      const dados = {id_autor: id, nome:autor};
+      //informa a url da api e os parametros
+      const resposta = await axios.post('http://10.0.2.2:81/livros_php/api.php', {
+        id_autor: id,
+        nome: nomeAutor,
+      });
+      navigation.navigate('VieewUser');
+      alert ("Autor atualizado com sucesso!");
+    } catch (error) {
+      //usar para depurar
+      //console.log(error)
+      navigation.navigate('VieewUser');
+      alert ("Erro ao atualizar autor");
+    }
+  }
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -26,14 +51,17 @@ const UpdateUser = ({ navigation }) => {
               <Mytextinput
                 placeholder="Entre com o ID do autor"
                 style={{ padding: 10 }}
+                value={id}
+                onChangeText={setId}
               />
-              <Mybutton title="Buscar Usuário" />
               <Mytextinput
                 placeholder="Entre com o Nome"
                 style={{ padding: 10 }}
+                value={autor}
+                onChangeText={setAutor}
               />
 
-              <Mybutton title="Atualizar Autor" />
+              <Mybutton title="Atualizar Autor" onPress={atualizarAutor} />
             </KeyboardAvoidingView>
           </ScrollView>
         </View>
